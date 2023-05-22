@@ -2,6 +2,7 @@ use crate::io::BlobStoreType;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::convert::TryFrom;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use datafusion::arrow;
@@ -37,6 +38,23 @@ impl ObjectStoreProvider for ColumnQObjectStoreProvider {
                     Ok(blob_type) => match blob_type {
                         BlobStoreType::S3 => {
                             let mut s3_builder = AmazonS3Builder::from_env().with_bucket_name(host);
+
+                            // TODO(fntlnz): for running in ecs (this very likely needs to be fixed in from_env in object_store but it's good for me for now)
+                            if let Ok(metadata_relative_uri) =
+                                std::env::var("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")
+                            {
+                                let base_url = "http://169.254.170.2/";
+                                let metadata_relative_uri = metadata_relative_uri;
+
+                                let mut path_buf = PathBuf::from(base_url);
+                                path_buf.push(metadata_relative_uri);
+
+                                let concatenated_path = path_buf.to_string_lossy();
+
+                                s3_builder =
+                                    s3_builder.with_metadata_endpoint(concatenated_path.clone());
+                            }
+
                             // for minio in CI
                             s3_builder = s3_builder.with_allow_http(true);
 

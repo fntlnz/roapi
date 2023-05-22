@@ -5,10 +5,10 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y cmake
 
 RUN RUSTFLAGS='-C target-cpu=skylake' \
-    cargo +nightly install --locked --git https://github.com/roapi/roapi --branch main --bins roapi --features "simd database"
+    cargo +nightly install --locked --git https://github.com/fntlnz/roapi --branch ecs-support --bins roapi --features "simd database"
 
 FROM debian:bullseye-slim
-LABEL org.opencontainers.image.source https://github.com/roapi/roapi
+LABEL org.opencontainers.image.source https://github.com/fntlnz/roapi
 
 RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY test_data /test_data
