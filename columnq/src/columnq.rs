@@ -2,7 +2,6 @@ use crate::io::BlobStoreType;
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 use std::convert::TryFrom;
-use std::path::PathBuf;
 use std::sync::Arc;
 
 use datafusion::arrow;
