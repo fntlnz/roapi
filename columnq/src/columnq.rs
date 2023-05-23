@@ -43,13 +43,16 @@ impl ObjectStoreProvider for ColumnQObjectStoreProvider {
                             if let Ok(metadata_relative_uri) =
                                 std::env::var("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI")
                             {
-                                let base_url = "http://169.254.170.2/";
+                                let base_url = "http://169.254.170.2";
                                 let metadata_relative_uri = metadata_relative_uri;
 
                                 let mut path_buf = PathBuf::from(base_url);
                                 path_buf.push(metadata_relative_uri);
 
                                 let concatenated_path = path_buf.to_string_lossy();
+
+                                //print concatenated_path
+                                println!("concatenated_path: {}", concatenated_path);
 
                                 s3_builder =
                                     s3_builder.with_metadata_endpoint(concatenated_path.clone());
